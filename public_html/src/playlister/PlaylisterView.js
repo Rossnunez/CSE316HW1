@@ -214,17 +214,7 @@ export default class PlaylisterView {
     */
     updateToolbarButtons(model) {
         let tps = model.tps;
-        if (model.confirmDialogOpen) {
-            this.disableButton("add-list-button");
-            this.disableButton("undo-button");
-            this.disableButton("redo-button");
-            this.disableButton("close-button");
-        } else {
-            this.enableButton("add-list-button");
-            this.enableButton("undo-button");
-            this.enableButton("redo-button");
-            this.enableButton("close-button");
-        }
+        
 
         if (!tps.hasTransactionToUndo()) {
             this.disableButton("undo-button");
@@ -238,6 +228,13 @@ export default class PlaylisterView {
             this.disableButton("add-button");
         } else {
             this.enableButton("add-button");
+        }
+        if (model.confirmDialogOpen) {
+            this.disableButton("add-list-button");
+            this.disableButton("undo-button");
+            this.disableButton("redo-button");
+            this.disableButton("close-button");
+            this.disableButton("add-button");
         }
     }
 
