@@ -147,6 +147,8 @@ export default class PlaylisterController {
         deleteConfirmButton.onclick = (event) => {
             let cSong = this.model.getSong(this.currentSongIndex);
             this.model.removeSongTransaction(cSong, this.currentSongIndex);
+            // ALLOW OTHER INTERACTIONS
+            this.model.toggleConfirmDialogOpen();
             // CLOSE THE MODAL
             let editListModal = document.getElementById("delete-song-modal");
             editListModal.classList.remove("is-visible");
@@ -155,6 +157,8 @@ export default class PlaylisterController {
         //RESPOND TO THE USER CANCEL THE DELETE A SONG MODEL
         let deleteCancelButton = document.getElementById("delete-song-cancel-button");
         deleteCancelButton.onclick = (event) => {
+            // ALLOW OTHER INTERACTIONS
+            this.model.toggleConfirmDialogOpen();
             // CLOSE THE MODAL
             let editListModal = document.getElementById("delete-song-modal");
             editListModal.classList.remove("is-visible");
@@ -251,11 +255,23 @@ export default class PlaylisterController {
         are songs in the playlist, and users can add and remove songs.
     */
     registerItemHandlers() {
-        // SETUP THE HANDLERS FOR ALL SONG CARDS, WHICH ALL GET DONE
+        // SETUP THE HANDLERS FOR ALL SONG CARDS, WeHICH ALL GET DONE
         // AT ONCE EVERY TIME DATA CHANGES, SINCE IT GETS REBUILT EACH TIME
         for (let i = 0; i < this.model.getPlaylistSize(); i++) {
             // GET THE CARD
             let card = document.getElementById("playlist-card-" + (i + 1));
+            let deleteSong = document.getElementById('delete-song-' + (i + 1));
+
+            deleteSong.addEventListener('click', (event) => {
+                let song = this.model.getSong(i);
+                let deleteSpan = document.getElementById("delete-song-span");
+                deleteSpan.innerHTML = song.title; //set the song name in the modal
+                this.currentSongIndex = i;
+
+                this.model.toggleConfirmDialogOpen();
+                const modal = document.querySelector("#delete-song-modal");
+                modal.classList.toggle("is-visible");
+            });
 
             // NOW SETUP ALL CARD DRAGGING HANDLERS AS THE USER MAY WISH TO CHANGE
             // THE ORDER OF SONGS IN THE PLAYLIST
@@ -268,6 +284,7 @@ export default class PlaylisterController {
                 const modal = document.querySelector("#edit-list-modal");
                 this.globalIndex = Number.parseInt(event.target.id.split("-")[2]) - 1; //get the index of the song
                 modal.classList.toggle("is-visible");
+                this.model.toggleConfirmDialogOpen();
             };
 
             // WHEN DRAGGING STARTS RECORD THE INDEX

@@ -1,3 +1,4 @@
+import toggleConfirmDialogOpen from "./PlaylisterModel.js";
 /**
  * PlaylisterView.js
  * 
@@ -130,16 +131,6 @@ export default class PlaylisterView {
             deleteSong.setAttribute("id", "delete-song-" + (i + 1));
             deleteSong.setAttribute("value", "X");
             deleteSong.setAttribute("style", "float: right;");
-            
-
-            deleteSong.addEventListener('click', (event) => {
-                let deleteSpan = document.getElementById("delete-song-span");
-                deleteSpan.innerHTML = song.title; //set the song name in the modal
-                this.controller.currentSongIndex = i; 
-
-                const modal = document.querySelector("#delete-song-modal");
-                modal.classList.toggle("is-visible");
-            });
 
 
             itemDiv.appendChild(deleteSong);
@@ -228,6 +219,25 @@ export default class PlaylisterView {
             this.disableButton("undo-button");
             this.disableButton("redo-button");
             this.disableButton("close-button");
+        } else {
+            this.enableButton("add-list-button");
+            this.enableButton("undo-button");
+            this.enableButton("redo-button");
+            this.enableButton("close-button");
+        }
+
+        if (!tps.hasTransactionToUndo()) {
+            this.disableButton("undo-button");
+        }
+
+        if (!tps.hasTransactionToRedo()) {
+            this.disableButton("redo-button");
+        }
+
+        if (model.hasCurrentList()) {
+            this.disableButton("add-button");
+        } else {
+            this.disableButton("add-button");
         }
     }
 
