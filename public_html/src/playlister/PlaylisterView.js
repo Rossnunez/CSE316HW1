@@ -214,7 +214,7 @@ export default class PlaylisterView {
     */
     updateToolbarButtons(model) {
         let tps = model.tps;
-        
+
 
         if (!tps.hasTransactionToUndo()) {
             this.disableButton("undo-button");
@@ -235,6 +235,8 @@ export default class PlaylisterView {
             this.disableButton("redo-button");
             this.disableButton("close-button");
             this.disableButton("add-button");
+        } else {
+            this.enableButton("add-list-button");
         }
     }
 
