@@ -71,7 +71,7 @@ export default class PlaylisterController {
 
         //HANDLER FOR ADD LIST BUTTON
         document.getElementById("add-button").onmousedown = (event) => {
-            this.model.addButton();
+            //this.model.addButton();
             this.model.addingSongTransaction();
         }
     }
