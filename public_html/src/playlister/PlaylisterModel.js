@@ -1,6 +1,9 @@
 import jsTPS from "../common/jsTPS.js";
 import Playlist from "./Playlist.js";
+import AddingSong_Transaction from "./transactions/AddingSong_Transaction.js";
 import MoveSong_Transaction from "./transactions/MoveSong_Transaction.js";
+import RemoveSong_Transaction from "./transactions/RemoveSong_Transaction.js";
+import EditSong_Transaction from "./transactions/EditSong_Transaction.js";
 
 /**
  * PlaylisterModel.js
@@ -41,7 +44,7 @@ export default class PlaylisterModel {
     }
 
     // FOR MVC STUFF
-    
+
     setView(initView) {
         this.view = initView;
     }
@@ -49,7 +52,7 @@ export default class PlaylisterModel {
     refreshToolbar() {
         this.view.updateToolbarButtons(this);
     }
-    
+
     // FIRST WE HAVE THE ACCESSOR (get) AND MUTATOR (set) METHODS
     // THAT GET AND SET BASIC VALUES NEEDED FOR COORDINATING INTERACTIONS
     // AND DISPLAY
@@ -82,6 +85,25 @@ export default class PlaylisterModel {
 
     setDeleteListId(initId) {
         this.deleteListId = initId;
+    }
+
+    setNewSong(title, artist, id, index) {
+        this.currentList.songs[index] = { "title": title, "artist": artist, "youTubeId": id }; //push the new song into the location where the current song is
+        this.saveLists();
+        this.view.refreshPlaylist(this.currentList); //refresh the list
+    }
+
+    addButton() {
+        this.currentList.songs.push({ "title": "Untitled", "artist": "Unknown", "youTubeId": "dQw4w9WgXcQ" });
+        this.view.refreshPlaylist(this.currentList);
+        this.saveLists();
+        this.view.refreshPlaylist(this.currentList);
+    }
+
+    addSong(cSong, index) {
+        this.currentList.songs.splice(index, 0, cSong);
+        this.view.refreshPlaylist(this.currentList);
+        this.saveLists();
     }
 
     toggleConfirmDialogOpen() {
@@ -173,10 +195,10 @@ export default class PlaylisterModel {
                 }
                 this.addNewList(listData.name, songs);
             }
-            this.sortLists();   
+            this.sortLists();
             this.view.refreshLists(this.playlists);
             return true;
-        }        
+        }
     }
 
     saveLists() {
@@ -208,7 +230,7 @@ export default class PlaylisterModel {
                 targetList.setName(initName);
             }
 
-            this.sortLists(); 
+            this.sortLists();
             this.view.highlightList(id);
             this.saveLists();
             this.view.updateStatusBar(this);
@@ -229,6 +251,19 @@ export default class PlaylisterModel {
         } else if (this.hasCurrentList()) {
             this.view.highlightList(this.currentList.id);
         }
+        this.saveLists();
+    }
+
+    deleteSongByIndex(i) {
+        this.currentList.songs.splice(i, 1);
+        this.view.refreshPlaylist(this.currentList);
+        this.saveLists();
+    }
+
+    deleteTheLastSong() {
+        let givenIndex = (this.currentList.songs.length - 1);
+        this.currentList.songs.splice(givenIndex, 1);
+        this.view.refreshPlaylist(this.currentList);
         this.saveLists();
     }
 
@@ -265,6 +300,24 @@ export default class PlaylisterModel {
 
     addMoveSongTransaction(fromIndex, onIndex) {
         let transaction = new MoveSong_Transaction(this, fromIndex, onIndex);
+        this.tps.addTransaction(transaction);
+        this.view.updateToolbarButtons(this);
+    }
+
+    addingSongTransaction() {
+        let transaction = new AddingSong_Transaction(this);
+        this.tps.addTransaction(transaction);
+        this.view.updateToolbarButtons(this);
+    }
+
+    removeSongTransaction(cSong, index) {
+        let transaction = new RemoveSong_Transaction(this, cSong, index);
+        this.tps.addTransaction(transaction);
+        this.view.updateToolbarButtons(this);
+    }
+
+    editSongTransaction(ot, oa, oid, nt, na, nid, index) {
+        let transaction = new EditSong_Transaction(this, ot, oa, oid, nt, na, nid, index);
         this.tps.addTransaction(transaction);
         this.view.updateToolbarButtons(this);
     }

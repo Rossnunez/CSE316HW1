@@ -45,6 +45,7 @@
         <div id="sidebar-list">
         </div>
         <div id="edit-toolbar">
+            <input type="button" id="add-button" value="+" class="toolbar-button" />
             <input type="button" id='undo-button' value="⟲" class="toolbar-button" />
             <input type="button" id='redo-button' value="⟳" class="toolbar-button" />
             <input type="button" id='close-button' value="&#x2715;" class="toolbar-button" />
@@ -58,7 +59,7 @@
             <div class="modal-root" id='verify-delete-list-root'>
                 <div class="modal-north">
                     Delete playlist?
-                </div>                
+                </div>
                 <div class="modal-center">
                     <div class="modal-center-content">
                         Are you sure you wish to permanently delete the <span id="delete-list-span"></span> playlist?
@@ -67,6 +68,53 @@
                 <div class="modal-south">
                     <input type="button" id="delete-list-confirm-button" class="modal-button" value='Confirm' />
                     <input type="button" id="delete-list-cancel-button" class="modal-button" value='Cancel' />
+                </div>
+            </div>
+        </div>
+        <!-- this is for deleting a modal -->
+        <div class="modal" id="delete-song-modal" data-animation="slideInOutLeft">
+            <div class="modal-root" id='verify-delete-song-root'>
+                <div class="modal-north">
+                    Delete Song?
+                </div>
+                <div class="modal-center">
+                    <div class="modal-center-content">
+                        Are you sure you wish to permanently remove <span id="delete-song-span"></span> from the
+                        playlist?
+                    </div>
+                </div>
+                <div class="modal-south">
+                    <input type="button" id="delete-song-confirm-button" class="modal-button" value='Confirm' />
+                    <input type="button" id="delete-song-cancel-button" class="modal-button" value='Cancel' />
+                </div>
+            </div>
+        </div>
+        <!-- this is for editing modal -->
+        <div class="modal" id="edit-list-modal" data-animation="slideInOutLeft">
+            <div class="modal-root" id='verify-edit-list-root'>
+                <div class="modal-north">
+                    Edit Song?
+                </div>
+                <div class="modal-center">
+                    <div class="modal-center-content">
+                        <!-- Are you sure you wish to permanently edit the <span id="edit-list-span"></span> playlist? -->
+                        <label style="float: left; font-size: 25pt; font-weight: bold;" for="Title">Title:</label>
+                        <input style="font-size: 15pt; margin:0px; float: right;" class="modal-button" type="text"
+                            id="Title" name="Title">
+                        <br>
+                        <label style="float: left; font-size: 25pt; font-weight: bold;" for="Artist">Artist:</label>
+                        <input style="font-size: 15pt; margin:0px; float: right;" class="modal-button" type="text"
+                            id="Artist" name="Artist">
+                        <br>
+                        <label style="float: left; font-size: 25pt; font-weight: bold;" for="Id">YoutubeId:</label>
+                        <input style="font-size: 15pt; margin:0px; float: right;" class="modal-button" type="text"
+                            id="Id" name="Id">
+                        <br>
+                    </div>
+                </div>
+                <div class="modal-south">
+                    <input type="button" id="edit-list-confirm-button" class="modal-button" value='Confirm' />
+                    <input type="button" id="edit-list-cancel-button" class="modal-button" value='Cancel' />
                 </div>
             </div>
         </div>

@@ -8,7 +8,7 @@
  * @author ?
  */
 export default class PlaylisterView {
-    constructor() {}
+    constructor() { }
 
     /*
         init
@@ -21,6 +21,7 @@ export default class PlaylisterView {
         this.enableButton('undo-button');
         this.enableButton('redo-button');
         this.enableButton('close-button');
+        this.enableButton('add-button');
     }
 
     /*
@@ -109,13 +110,40 @@ export default class PlaylisterView {
             // MAKE AN ITEM (i.e. CARD)
             let song = playlist.getSongAt(i);
             let itemDiv = document.createElement("div");
+
             itemDiv.classList.add("list-card");
             itemDiv.classList.add("unselected-list-card");
+            //itemDiv.innerHTML = " <input style=\"font-size: 15pt; float: right;\" type=\"button\" id=\"delete-song-" + (i + 1) + "\" onclick=\"deleteSongFunction(this.id)\" value=\"✕\" class=\"list-card-button\"></input>";
             itemDiv.id = "playlist-card-" + (i + 1);
-
             // PUT THE CONTENT INTO THE CARD
-            let itemText = document.createTextNode(song.title + " by " + song.artist);
-            itemDiv.appendChild(itemText);
+            let number = document.createTextNode((i + 1) + ". ");
+            //let itemText = document.createTextNode(song.title + " by " + song.artist);
+            let itemNode = document.createElement('span');
+            itemNode.innerHTML = " <a href=\"https://www.youtube.com/watch?v=" + song.youTubeId + "\"</a>" + song.title + " by " + song.artist;
+            //links.appendChild(itemText);
+            itemDiv.appendChild(number);
+            itemDiv.appendChild(itemNode);
+            //itemDiv.appendChild(itemText);
+
+            let deleteSong = document.createElement("input");
+            deleteSong.setAttribute("type", "button");
+            deleteSong.setAttribute("id", "delete-song-" + (i + 1));
+            deleteSong.setAttribute("value", "X");
+            deleteSong.setAttribute("style", "float: right;");
+            
+
+            deleteSong.addEventListener('click', (event) => {
+                let deleteSpan = document.getElementById("delete-song-span");
+                deleteSpan.innerHTML = song.title; //set the song name in the modal
+                this.controller.currentSongIndex = i; 
+
+                const modal = document.querySelector("#delete-song-modal");
+                modal.classList.toggle("is-visible");
+            });
+
+
+            itemDiv.appendChild(deleteSong);
+
 
             // AND PUT THE CARD INTO THE UI
             itemsDiv.appendChild(itemDiv);
@@ -156,8 +184,8 @@ export default class PlaylisterView {
         This function enables the button that has the id parameter
         as it's id property. This should be done as part of a foolproof
         design strategy.
-    */    
-   enableButton(id) {
+    */
+    enableButton(id) {
         let button = document.getElementById(id);
         button.classList.remove("disabled");
         button.disabled = false;

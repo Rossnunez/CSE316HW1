@@ -7,7 +7,11 @@
  * @author ?
  */
 export default class PlaylisterController {
-    constructor() { }
+
+    constructor() {
+        this.globalIndex = 0;
+        this.currentSongIndex = 0;
+    }
 
     /*
         setModel 
@@ -64,6 +68,12 @@ export default class PlaylisterController {
             this.model.unselectAll();
             this.model.unselectCurrentList();
         }
+
+        //HANDLER FOR ADD LIST BUTTON
+        document.getElementById("add-button").onmousedown = (event) => {
+            this.model.addButton();
+            this.model.addingSongTransaction();
+        }
     }
 
     /*
@@ -86,22 +96,69 @@ export default class PlaylisterController {
 
             // ALLOW OTHER INTERACTIONS
             this.model.toggleConfirmDialogOpen();
+            // CLOSE THE MODAL
+            let deleteListModal = document.getElementById("delete-list-modal");
+            deleteListModal.classList.remove("is-visible");
+        }
+        // RESPOND TO THE USER CLOSING THE DELETE PLAYLIST MODAL
+        let deleteListCancelButton = document.getElementById("delete-list-cancel-button");
+        deleteListCancelButton.onclick = (event) => {
+            // ALLOW OTHER INTERACTIONS
+            this.model.toggleConfirmDialogOpen();
 
             // CLOSE THE MODAL
             let deleteListModal = document.getElementById("delete-list-modal");
             deleteListModal.classList.remove("is-visible");
         }
 
-        // RESPOND TO THE USER CLOSING THE DELETE PLAYLIST MODAL
-        let deleteListCancelButton = document.getElementById("delete-list-cancel-button");
-        deleteListCancelButton.onclick = (event) => {
+        // RESPOND TO THE USER CONFIRMING TO EDIT A SONG
+        let editListConfirmButton = document.getElementById("edit-list-confirm-button");
+        editListConfirmButton.onclick = (event) => {
+            let titleName = document.getElementById("Title").value; //get custom title
+            let artistName = document.getElementById("Artist").value; //get custom artist
+            let idName = document.getElementById("Id").value; //get custom id
+
+            let oSong = this.model.getSong(this.globalIndex);
+            let nt = oSong.title;
+            let na = oSong.artist;
+            let nid = oSong.youTubeId;
+            // this.model.setNewSong(titleName, artistName, idName, this.globalIndex);
+            this.model.editSongTransaction(nt, na, nid, titleName, artistName, idName, this.globalIndex);
+            console.log(nt + " " + na + " " + nid + " " + titleName + " " + artistName + " " + idName + " " + this.globalIndex);
             // ALLOW OTHER INTERACTIONS
             this.model.toggleConfirmDialogOpen();
-            
             // CLOSE THE MODAL
-            let deleteListModal = document.getElementById("delete-list-modal");
-            deleteListModal.classList.remove("is-visible");
-        }        
+            let editListModal = document.getElementById("edit-list-modal");
+            editListModal.classList.remove("is-visible");
+        }
+
+        //RESPOND TO THE USER CLOSE THE EDIT A SONG MODAL
+        let editListCancelButton = document.getElementById("edit-list-cancel-button");
+        editListCancelButton.onclick = (event) => {
+            // ALLOW OTHER INTERACTIONS
+            this.model.toggleConfirmDialogOpen();
+            // CLOSE THE MODAL
+            let editListModal = document.getElementById("edit-list-modal");
+            editListModal.classList.remove("is-visible");
+        }
+        //------------------------------------------>
+        //RESPOND TO THE USER CONFIRM THE DELETE A SONG MODAL
+        let deleteConfirmButton = document.getElementById("delete-song-confirm-button");
+        deleteConfirmButton.onclick = (event) => {
+            let cSong = this.model.getSong(this.currentSongIndex);
+            this.model.removeSongTransaction(cSong, this.currentSongIndex);
+            // CLOSE THE MODAL
+            let editListModal = document.getElementById("delete-song-modal");
+            editListModal.classList.remove("is-visible");
+        }
+
+        //RESPOND TO THE USER CANCEL THE DELETE A SONG MODEL
+        let deleteCancelButton = document.getElementById("delete-song-cancel-button");
+        deleteCancelButton.onclick = (event) => {
+            // CLOSE THE MODAL
+            let editListModal = document.getElementById("delete-song-modal");
+            editListModal.classList.remove("is-visible");
+        }
     }
 
     /*
@@ -199,12 +256,19 @@ export default class PlaylisterController {
         for (let i = 0; i < this.model.getPlaylistSize(); i++) {
             // GET THE CARD
             let card = document.getElementById("playlist-card-" + (i + 1));
-            
+
             // NOW SETUP ALL CARD DRAGGING HANDLERS AS THE USER MAY WISH TO CHANGE
             // THE ORDER OF SONGS IN THE PLAYLIST
 
             // MAKE EACH CARD DRAGGABLE
             card.setAttribute('draggable', 'true')
+
+            // MAKE EACH CARD DOUBLE-CLICKABLE
+            card.ondblclick = (event) => {
+                const modal = document.querySelector("#edit-list-modal");
+                this.globalIndex = Number.parseInt(event.target.id.split("-")[2]) - 1; //get the index of the song
+                modal.classList.toggle("is-visible");
+            };
 
             // WHEN DRAGGING STARTS RECORD THE INDEX
             card.ondragstart = (event) => {
@@ -232,13 +296,15 @@ export default class PlaylisterController {
                 // ONLY ADD A TRANSACTION IF THEY ARE NOT THE SAME
                 // AND BOTH INDICES ARE VALID
                 if ((fromIndex !== toIndex)
-                    && !isNaN(fromIndex) 
+                    && !isNaN(fromIndex)
                     && !isNaN(toIndex)) {
                     this.model.addMoveSongTransaction(fromIndex, toIndex);
                 }
             }
         }
     }
+
+
 
     /*
         ignoreParentClick
