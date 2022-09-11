@@ -260,9 +260,9 @@ export default class PlaylisterController {
         for (let i = 0; i < this.model.getPlaylistSize(); i++) {
             // GET THE CARD
             let card = document.getElementById("playlist-card-" + (i + 1));
-            let deleteSong = document.getElementById('delete-song-' + (i + 1));
+            let deleteSongButton = document.getElementById('delete-song-' + (i + 1));
 
-            deleteSong.addEventListener('click', (event) => {
+            deleteSongButton.addEventListener('click', (event) => {
                 let song = this.model.getSong(i);
                 let deleteSpan = document.getElementById("delete-song-span");
                 deleteSpan.innerHTML = song.title; //set the song name in the modal
@@ -283,6 +283,11 @@ export default class PlaylisterController {
             card.ondblclick = (event) => {
                 const modal = document.querySelector("#edit-list-modal");
                 this.globalIndex = Number.parseInt(event.target.id.split("-")[2]) - 1; //get the index of the song
+                let song = this.model.getSong(this.globalIndex);
+                document.getElementById("Title").value = song.title;
+                document.getElementById("Artist").value = song.artist;
+                document.getElementById("Id").value = song.youTubeId;
+
                 modal.classList.toggle("is-visible");
                 this.model.toggleConfirmDialogOpen();
             };
