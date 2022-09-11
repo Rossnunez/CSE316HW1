@@ -24,10 +24,9 @@ export default class EditSong_Transaction extends jsTPS_Transaction {
 
     doTransaction() {
         this.model.setNewSong(this.nTitle, this.nArtist, this.nId, this.ii);
-        console.log(this.oT + " " + this.oA + " " + this.oId + " " + this.nTitle + " " + this.nArtist + " " + this.nId + " " + this.ii);
     }
 
     undoTransaction() {
-        this.model.setNewSong("bruh", "wtf", "is going on", this.ii);
+        this.model.setNewSong(this.oT, this.oA, this.oId, this.ii);
     }
 }

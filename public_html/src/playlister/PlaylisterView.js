@@ -229,20 +229,21 @@ export default class PlaylisterView {
         }
 
         if (!model.hasCurrentList()) {
+            this.enableButton("add-list-button");
             this.disableButton("add-button");
             this.disableButton("close-button");
         } else {
+            this.disableButton("add-list-button");
             this.enableButton("add-button");
             this.enableButton("close-button");
         }
+
         if (model.confirmDialogOpen) {
             this.disableButton("add-list-button");
             this.disableButton("undo-button");
             this.disableButton("redo-button");
             this.disableButton("close-button");
             this.disableButton("add-button");
-        } else {
-            this.enableButton("add-list-button");
         }
     }
 
