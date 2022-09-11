@@ -218,16 +218,22 @@ export default class PlaylisterView {
 
         if (!tps.hasTransactionToUndo()) {
             this.disableButton("undo-button");
+        } else {
+            this.enableButton("undo-button");
         }
 
         if (!tps.hasTransactionToRedo()) {
             this.disableButton("redo-button");
+        } else {
+            this.enableButton("redo-button");
         }
 
         if (!model.hasCurrentList()) {
             this.disableButton("add-button");
+            this.disableButton("close-button");
         } else {
             this.enableButton("add-button");
+            this.enableButton("close-button");
         }
         if (model.confirmDialogOpen) {
             this.disableButton("add-list-button");
